@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import AppLayout from '../../components/AppLayout';
 import api from '../../lib/api';
 
@@ -12,6 +12,7 @@ export default function Sales() {
   const [payment, setPayment] = useState('cash');
   const [customerPhone, setCustomerPhone] = useState('');
   const [sales, setSales] = useState([]);
+  const [expanded, setExpanded] = useState(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
@@ -153,14 +154,36 @@ export default function Sales() {
             <thead><tr><th>Invoice</th><th>Date</th><th>Items</th><th>Total</th><th>Payment</th><th>Cashier</th></tr></thead>
             <tbody>
               {sales.map(s => (
-                <tr key={s._id}>
-                  <td><strong>{s.invoiceNo}</strong></td>
-                  <td>{new Date(s.createdAt).toLocaleString('bn-BD')}</td>
-                  <td>{s.items.length}</td>
-                  <td>৳{s.total}</td>
-                  <td><span className="badge badge-blue">{s.paymentMethod}</span></td>
-                  <td>{s.cashier?.name}</td>
-                </tr>
+                <Fragment key={s._id}>
+                  <tr style={{ cursor: 'pointer' }} onClick={() => setExpanded(expanded === s._id ? null : s._id)}>
+                    <td><strong>{s.invoiceNo}</strong></td>
+                    <td>{new Date(s.createdAt).toLocaleString('bn-BD')}</td>
+                    <td>{s.items.length} items {expanded === s._id ? '▲' : '▼'}</td>
+                    <td>৳{s.total}</td>
+                    <td><span className="badge badge-blue">{s.paymentMethod}</span></td>
+                    <td>{s.cashier?.name}</td>
+                  </tr>
+                  {expanded === s._id && (
+                    <tr key={s._id + '-detail'}>
+                      <td colSpan={6} style={{ background: '#f7fafc', padding: '10px 20px' }}>
+                        <table style={{ width: '100%' }}>
+                          <thead><tr><th>Medicine</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+                          <tbody>
+                            {s.items.map((item, i) => (
+                              <tr key={i}>
+                                <td>{item.name}</td>
+                                <td>{item.qty}</td>
+                                <td>৳{item.price}</td>
+                                <td>৳{item.subtotal}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        {s.discount > 0 && <div style={{ textAlign: 'right', marginTop: 6, fontSize: 13 }}>Discount: ৳{s.discount}</div>}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>

@@ -6,7 +6,7 @@ const { auth } = require('../middleware/auth');
 router.post('/login', async (req, res) => {
   try {
     const { phone, password } = req.body;
-    const user = await User.findOne({ phone, active: true });
+    const user = await User.findOne({ $or: [{ phone }, { name: phone }], active: true });
     if (!user || !(await user.matchPassword(password)))
       return res.status(401).json({ message: 'Invalid credentials' });
     const token = jwt.sign({ id: user._id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: '7d' });

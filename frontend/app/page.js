@@ -32,8 +32,8 @@ export default function LoginPage() {
         {error && <div className="alert alert-red">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Phone Number</label>
-            <input className="form-control" type="tel" placeholder="01XXXXXXXXX"
+            <label>Username</label>
+            <input className="form-control" type="text" placeholder="Username or Phone"
               value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required />
           </div>
           <div className="form-group">

@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 export default function AppLayout({ title, children }) {
   const router = useRouter();
   useEffect(() => {
-    if (!localStorage.getItem('token')) router.push('/');
+    if (typeof window !== 'undefined' && !localStorage.getItem('token')) router.push('/');
   }, []);
 
   return (

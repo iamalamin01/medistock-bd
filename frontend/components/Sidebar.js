@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -22,7 +23,8 @@ export default function Sidebar() {
     router.push('/');
   };
 
-  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+  const [user, setUser] = useState({});
+  useEffect(() => { setUser(JSON.parse(localStorage.getItem('user') || '{}')); }, []);
 
   return (
     <div className="sidebar">
